@@ -86,15 +86,15 @@ int main() {
 // Enter the virtual machine
 void pMachine() {
 
-  if(pc != 0)
-    printf("Stack trace: \n");
+
+  printf("Stack trace: \n");
 
   // Enter while loop for each instruction
   while(halt != 1) {
 
     // Print PC
     printf("%d\t", pc);
-    stack[1] = 1;
+
 
     // Enter fetch cycle
     fetchCycle();
@@ -104,16 +104,23 @@ void pMachine() {
     printf("%d\t%d\t%d\t%d\t%d\t%d\t",
     ir.r, ir.l, ir.m, pc, bp, sp);
 
-    int i = 0;
-    printf("Stack: ");
-    while(i <= sp) {
+    int i;
+    int flag = 0;
+    for(i = 1; i<=sp; i++) {
+      if(i == 7 && sp > 7) {
+				printf("| ");
+        flag = 1;
+      }
+      if(i == 11 && sp > 11 && flag == 1) {
+				printf("| ");
+      }
       printf("%d ", stack[i]);
-
-      i++;
     }
 
     printf("\n");
   }
+
+  printf("\nOutput:\n%d\n", rf[0]);
 }
 
 // Run the Fetch Cycle:
@@ -165,8 +172,6 @@ void executeCycle() {
       pc = ir.m;
 
       // Generate a new activation record
-      lex[currLex] = sp;
-      currLex++;
 
       printf("CAL\t");
       break;
@@ -199,7 +204,7 @@ void executeCycle() {
       else {
         halt = 1;
         pc = 0;
-
+        sp = 0;
         printf("SIO\t");
       }
       break;
