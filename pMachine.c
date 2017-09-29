@@ -34,6 +34,10 @@ int stack[MAX_STACK_HEIGHT];
 
 // Lex
 int lex[MAX_LEXI_LEVELS];
+// Track lex
+int trackLex = 0;
+// Current Lex level
+int currLex = 0;
 
 // Code array
 instruction code[MAX_CODE_LENGTH];
@@ -46,24 +50,10 @@ void fetchCycle();
 void executeCycle();
 int base(int l, int base);
 
-// Enter the virtual machine
-void pMachine() {
-  int i = 0;
-
-  // Enter while loop for each instruction
-  while(halt != 1) {
-    i++;
-    fetchCycle();
-    executeCycle();
-
-  }
-}
-
 // Scan in code
 int main() {
   FILE *ifp, *ofp;
-  ifp = fopen("input.txt","r");
-  ofp = fopen("stacktrace.txt","w");
+  ifp = fopen("input.txt", "r");
 
   int op = 0;
   int r = 0;
@@ -87,10 +77,43 @@ int main() {
   }
 
   codeLen = len;
-
   pMachine();
 
   return 0;
+}
+
+
+// Enter the virtual machine
+void pMachine() {
+
+  if(pc != 0)
+    printf("Stack trace: \n");
+
+  // Enter while loop for each instruction
+  while(halt != 1) {
+
+    // Print PC
+    printf("%d\t", pc);
+    stack[1] = 1;
+
+    // Enter fetch cycle
+    fetchCycle();
+    // Enter execute cycle
+    executeCycle();
+
+    printf("%d\t%d\t%d\t%d\t%d\t%d\t",
+    ir.r, ir.l, ir.m, pc, bp, sp);
+
+    int i = 0;
+    printf("Stack: ");
+    while(i <= sp) {
+      printf("%d ", stack[i]);
+
+      i++;
+    }
+
+    printf("\n");
+  }
 }
 
 // Run the Fetch Cycle:
@@ -118,6 +141,8 @@ void executeCycle() {
       sp = bp - 1;
       bp = stack[sp + 3];
       pc = stack[sp + 4];
+      // Return from subroutine. Track activation record
+      trackLex = 1;
       printf("RTN\t");
       break;
 
@@ -138,7 +163,12 @@ void executeCycle() {
       stack[sp + 4] = pc;	 		        // return address (RA)
       bp = sp + 1;
       pc = ir.m;
-      printf("STO\n");
+
+      // Generate a new activation record
+      lex[currLex] = sp;
+      currLex++;
+
+      printf("CAL\t");
       break;
 
     case 6:
@@ -168,6 +198,8 @@ void executeCycle() {
       }
       else {
         halt = 1;
+        pc = 0;
+
         printf("SIO\t");
       }
       break;
