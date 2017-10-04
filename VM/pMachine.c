@@ -20,11 +20,11 @@ typedef struct {
 } instruction;
 
 // PM/0 Initial/Default Values:
-int sp = 0;
-int bp = 1;
-int pc = 0;
-int rf[8];
-instruction ir;
+int sp = 0;      // stack pointer
+int bp = 1;      // base pointer
+int pc = 0;      // program counter
+int rf[8];       // register file
+instruction ir;  // instruction register
 
 // Length of code
 int codeLen = 0;
@@ -34,14 +34,11 @@ int stack[MAX_STACK_HEIGHT];
 
 // Lex
 int lex[MAX_LEXI_LEVELS];
-// Track lex
-int trackLex = 0;
-// Current Lex level
-int currLex = 0;
 
 // Code array
 instruction code[MAX_CODE_LENGTH];
 
+// Halt flag
 int halt = 0;
 
 // Function definitions
@@ -82,19 +79,15 @@ int main() {
   return 0;
 }
 
-
 // Enter the virtual machine
 void pMachine() {
-
-
-  printf("Stack trace: \n");
+  printf("Stack trace:\nInitial Values\t\t\t\tpc\tbp\tsp\n");
 
   // Enter while loop for each instruction
   while(halt != 1) {
 
     // Print PC
     printf("%d\t", pc);
-
 
     // Enter fetch cycle
     fetchCycle();
@@ -148,8 +141,6 @@ void executeCycle() {
       sp = bp - 1;
       bp = stack[sp + 3];
       pc = stack[sp + 4];
-      // Return from subroutine. Track activation record
-      trackLex = 1;
       printf("RTN\t");
       break;
 
@@ -170,9 +161,7 @@ void executeCycle() {
       stack[sp + 4] = pc;	 		        // return address (RA)
       bp = sp + 1;
       pc = ir.m;
-
       // Generate a new activation record
-
       printf("CAL\t");
       break;
 
@@ -194,7 +183,7 @@ void executeCycle() {
 
     case 9:
       if(ir.m == 1) {
-        printf("%d", rf[ir.r]);
+        // printf("%d", rf[ir.r]);
         printf("SIO\t");
       }
       else if(ir.m == 2) {
