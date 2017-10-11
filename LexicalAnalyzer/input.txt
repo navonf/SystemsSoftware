@@ -1,3 +1,4 @@
+/* hello hello */
 var x, y;
 begin
 	y := 3;
