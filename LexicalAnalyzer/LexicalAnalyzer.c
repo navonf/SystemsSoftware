@@ -385,11 +385,11 @@ int main() {
     }
   }
   printf("\n");
-
+  
   return 0;
 }
 
-// Function to clear out our strings, uhggg C.
+// Function to clear out our strings, uhg, C
 void resetWord(char *word) {
   int i;
   for(i = 0; i < 100; i++) {
