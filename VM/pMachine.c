@@ -269,7 +269,8 @@ int base(int l, int base) {
   int b1; // Find base L levels down
   b1 = base;
 
-  while (l > 0) {
+  while (l > 0)
+  {
     b1 = stack[b1 + 1];
     l--;
   }
