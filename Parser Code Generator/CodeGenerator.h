@@ -18,7 +18,5 @@ typedef struct {
 	int codeSize;
 } instruction;
 
-void emit(int opr, int l, int m, stack* s, instruction* code);
-
 
 #endif

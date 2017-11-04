@@ -18,4 +18,8 @@ typedef struct stack {
 	int height;
 } stack;
 
+stack* stackInit();
+void stackPush(int number, stack* stacky);
+int stackPop(stack* stacky);
+
 #endif

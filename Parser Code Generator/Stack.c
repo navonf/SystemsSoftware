@@ -11,7 +11,7 @@ stack* stackInit() {
   stacky->head = NULL;
 
   // init size
-  stacky->size = 0;
+  stacky->height = 0;
 
   return stacky;
 }
@@ -23,7 +23,7 @@ void stackPush(int number, stack* stacky) {
 
 
   // store our number in the stack
-	node->value = number;
+	node->val = number;
 	node->next = stacky->head;
 
   // set that as the new head, LIFO - Last in first out

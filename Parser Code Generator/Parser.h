@@ -29,13 +29,17 @@ typedef struct {
 } symbol;
 
 // code array
-instruction codee[500];
+// instruction codee[500];
 
-void parse(listy lst, int* reg, instruction* code);
+void parse(listy lst, stack* reg, instruction* code);
 void error (int recovery, int n);
-void block(listy lst, int* reg, instruction* code, symbol* table);
-void constDeclaration(listy lst, int* reg, instruction* code, symbol* table);
-void varDeclaration(listy lst, int* reg, instruction* code, int* addrPos, symbol* table);
-void procDeclaration(listy lst, int* reg, instruction* code, symbol* table);
+void block(listy lst, stack* reg, instruction* code, symbol* table);
+void constDeclaration(listy lst, stack* reg, instruction* code, symbol* table);
+void varDeclaration(listy lst, stack* reg, instruction* code, int* addrPos, symbol* table);
+void procDeclaration(listy lst, stack* reg, instruction* code, symbol* table);
+void statement(listy lst, stack* reg, instruction* code, symbol* table);
+void emit(int op, int l, int m, int r, instruction* code);
+void expression(listy lst, stack* reg, instruction* code, symbol* table);
+int position(char* id, symbol* table, int tx);
 
 #endif

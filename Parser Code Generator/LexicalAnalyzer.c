@@ -372,20 +372,20 @@ listy lexy() {
   }
 
   // Print out Lexeme List ---------------------------------------------------->
-  printf("\n");
-  printf("Lexeme List:\n");
+  // printf("\n");
+  // printf("Lexeme List:\n");
   int j = 0;
 	int idx = 0;
 	int s = 1;
   for(i = 0; i < lexPosition; i++) {
-    printf("%d ", lex[i]);
+    // printf("%d ", lex[i]);
 		myList.list[idx].lex = lex[i];
 		myList.size = s++;
 		idx++;
 
     if(lex[i] == 2 || lex[i] == 3) {
       // Print each var name or number
-      printf("%s ", id[j]);
+      // printf("%s ", id[j]);
 			strcpy(myList.list[idx].words, id[j]);
 			myList.size = s++;
 			myList.list[idx].type = 2;
@@ -393,7 +393,7 @@ listy lexy() {
       j++;
     }
   }
-  printf("\n");
+  // printf("\n");
 
   // return tokens
 	return myList;
