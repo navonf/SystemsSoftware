@@ -40,6 +40,8 @@ void procDeclaration(listy lst, stack* reg, instruction* code, symbol* table);
 void statement(listy lst, stack* reg, instruction* code, symbol* table);
 void emit(int op, int l, int m, int r, instruction* code);
 void expression(listy lst, stack* reg, instruction* code, symbol* table);
+void term(listy lst, stack* reg, instruction* code, symbol* table);
+void factor(listy lst, stack* reg, instruction* code, symbol* table);
 int position(char* id, symbol* table, int tx);
 
 #endif

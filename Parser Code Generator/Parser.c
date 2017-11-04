@@ -158,23 +158,104 @@ void statement(listy lst, stack* reg, instruction* code, symbol* table) {
   // printf("-------: %d\n", lst.list[lst.index].lex);
 
   if(lst.list[lst.index].lex == identsym) {
-
     lst.index++;
 
     i = position(lst.list[lst.index].words, table, tx);
 
+    if(i == 0) {
+      error(0, 11);
+    }
+    else if(table[i].kind != 2) {
+      error(0, 12);
+    }
+
+    // here or in there?------v
+    lst.index++;
     if(lst.list[lst.index].type != becomessym) {
       error(0, 3);
     }
   }
-  lst.index++;
-  expression();
+  expression(lst, reg, code, table);
+  //gen
+
 
 }
 
 void expression(listy lst, stack* reg, instruction* code, symbol* table) {
+  if(lst.list[lst.index].lex == plussym || lst.list[lst.index].lex == minussym) {
+    lst.index++;
+    term(lst, reg, code, table);
+    //more here
+  }
 
+  while(lst.list[lst.index].lex == plussym || lst.list[lst.index].lex == minussym) {
+    lst.index++;
+    term(lst, reg, code, table);
+
+    if(lst.list[lst.index].lex == plussym) {
+      //gen
+    }
+    else {
+      //gen
+    }
+  }
 }
+
+void term(listy lst, stack* reg, instruction* code, symbol* table) {
+  factor(lst, reg, code, table);
+
+  while(lst.list[lst.index].lex == multsym || lst.list[lst.index].lex == slashsym) {
+    lst.index++;
+    factor(lst, reg, code, table);
+
+    if(lst.list[lst.index].lex == multsym) {
+      //gen
+    }
+    else{
+      //gem
+    }
+  }
+}
+
+void factor(listy lst, stack* reg, instruction* code, symbol* table) {
+  int i;
+
+  if(lst.list[lst.index].lex == identsym) {
+    lst.index++;
+    i = position(lst.list[lst.index].words, table, tx);
+
+    if(i == 0) {
+      error(0, 11);
+    }
+
+    if(table[i].kind == 2) {
+      //gen
+    }
+    else if(table[i].kind == 1) {
+      //gen
+    }
+    else {
+      error(0, 12);
+    }
+
+  }
+  else if(lst.list[lst.index].lex == numbersym) {
+    lst.index++;
+    //gen
+  }
+  else if(lst.list[lst.index].lex == lparentsym) {
+    lst.index++;
+    expression(lst, reg, code, table);
+
+    if(lst.list[lst.index].lex == rparentsym) {
+      lst.index++;
+    }
+    else {
+      error(0, 22);
+    }
+  }
+}
+
 int position(char* id, symbol* table, int tx) {
   strcpy(table[0].name, id);
   int i = tx - 1;
@@ -353,9 +434,6 @@ void error (int recovery, int n) {
 			break;
 		case 30:
 			printf("Compare operator expected.\n");
-			break;
-		case 31:
-			printf(") expected.\n");
 			break;
     case 32:
       printf("procedure found, exit.");
