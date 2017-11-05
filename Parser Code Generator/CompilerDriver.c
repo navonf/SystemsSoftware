@@ -11,6 +11,7 @@
 
 #include "./LexicalAnalyzer.h"
 #include "./Parser.h"
+#include "./Stack.h"
 
 
 void printSymbols(int num);
@@ -44,7 +45,7 @@ int main(int argc, char* argv[]) {
 
   }
 
-  // printf(" run lexx:  %d\nrun VM %d\n runParser: %d\n", runLexer, runVM, runParser);
+  printf("in:\n");
   if(runLexer == 1) {
     myListy = lexy();
 
@@ -53,6 +54,7 @@ int main(int argc, char* argv[]) {
 
     for(i = 0; i < myListy.size; i++) {
       if(myListy.list[i].type == 2) {
+        printf("%d ", myListy.list[i].lex);
         printf("%s ", myListy.list[i].words);
       }
       else {
@@ -64,6 +66,7 @@ int main(int argc, char* argv[]) {
 
     for(i = 0; i < myListy.size; i++) {
       if(myListy.list[i].type == 2) {
+        printSymbols(myListy.list[i].lex);
         printf("%s ", myListy.list[i].words);
       }
       else {
@@ -73,19 +76,11 @@ int main(int argc, char* argv[]) {
     printf("\n\n");
   }
 
-  // start code at 0, set all the indecies to 0
-  code.codeSize = 0;
-  int i = 0;
-  for (i = 0 ; i < MAX_CODE_LENGTH ;i ++) {
-		code.memArr[i].op = 0;
-		code.memArr[i].r = 0;
-		code.memArr[i].l = 0;
-		code.memArr[i].m = 0;
-	}
 
+  printf("\nout:\n");
   if(runParser == 1) {
-    myListy = lexy();
-    parse(myListy, reg, &code);
+    //myListy = lexy();
+    parse(reg, &code);
   }
 
   if(runVM == 1) {
@@ -186,7 +181,7 @@ void printSymbols(int num) {
     printf("constsym ");
   }
   else if(num == 29) {
-    printf("varsym ");
+    printf("intsym ");
   }
   else if(num == 30) {
     printf("procsym ");

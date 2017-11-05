@@ -1,33 +1,22 @@
 // Navon Francis
 // Parser
-// Eurip`id`es Montagne
+// Euripides Montagne
 // 11/03/2017
 
 #include "./Parser.h"
 
-int isCorrect = 0;
-int trueL = 0;
 int tx = 1;
 int cx = 0;
+int correct = 0;
+int addr = 4;
+int rf[8];
 
-// here for reference
-// // lexeme list
-// typedef struct {
-// 	int lex;
-// 	char words[11];
-//   int type;
-// } lexList;
-//
-// // wrapper so we can keep the length
-// typedef struct {
-// 	lexList list[1000];
-// 	int size;
-// 	int index;
-// } listy;
+listy lst;
 
-void parse(listy lst, stack* reg, instruction* code) {
+void parse(stack* reg, instruction* code) {
 
   symbol table[1000];
+  lst = lexy();
   // pointers for symbol table
   int l = 0; // level
   int d = 0; // data index
@@ -36,34 +25,53 @@ void parse(listy lst, stack* reg, instruction* code) {
 
   int i = 0;
 
-  // emit(6, 0, 3, reg, code);
-  block(lst, reg, code, table);
+  block(reg, code, table);
 
   // complete rest of stuff here
-
+  lst.index++;
   if(lst.list[lst.index].lex != periodsym) {
     error(0, 9);
   }
 
-  if(isCorrect == 0) {
+  if(correct == 0) {
     printf("\nThe program is syntactically correct!\n");
+  }
+
+  FILE *fp;
+  fp = fopen("parse.txt", "w");
+  printf("\nGenerated Code:\n");
+  for(i=0; i<cx;i++) {
+    fprintf(fp, "%d %d %d %d\n", code[i].op, code[i].r, code[i].l, code[i].m);
+  }
+
+  fclose(fp);
+
+  for(i=0; i<cx;i++) {
+    printf("%d %d %d %d\n", code[i].op, code[i].r, code[i].l, code[i].m);
   }
 
 }
 
-void block(listy lst, stack* reg, instruction* code, symbol* table) {
-  int addr = 4;
-
-  constDeclaration(lst , reg, code, table);
-	varDeclaration(lst, reg, code, &addr, table);
+void block(stack* reg, instruction* code, symbol* table) {
 
 
-  statement(lst, reg, code, table);
+  emit(7, 0, 0, 0, code);
+
+  constDeclaration(reg, code, table);
+	varDeclaration(reg, code, table);
+
+  emit(6, 0, addr, 0, code);
+
+  statement(reg, code, table);
 
 
+  emit(2, 0, 0, 0, code);
+
+
+  int i = 0;
 }
 
-void constDeclaration(listy lst, stack* reg, instruction* code, symbol* table) {
+void constDeclaration(stack* reg, instruction* code, symbol* table) {
   if(lst.list[lst.index].lex != constsym)
     return;
 
@@ -71,7 +79,7 @@ void constDeclaration(listy lst, stack* reg, instruction* code, symbol* table) {
 
     // terminal indent
     lst.index++;
-    if(lst.list[lst.index].type != identsym) {
+    if(lst.list[lst.index].lex != identsym) {
       error(0, 4);
     }
 
@@ -92,35 +100,34 @@ void constDeclaration(listy lst, stack* reg, instruction* code, symbol* table) {
     table[tx].val = lst.list[lst.index].lex;
     tx++;
 
-
+    lst.index++;
 
   } while (lst.list[lst.index].lex == commasym);
 
-  lst.index++;
+
 
   if(lst.list[lst.index].lex != semicolonsym) {
     error(0, 5);
   }
 }
 
-void varDeclaration(listy lst, stack* reg, instruction* code, int* addrPos, symbol* table) {
-  printf("list index:: %d\n", lst.index);
+void varDeclaration(stack* reg, instruction* code, symbol* table) {
 
   int i = 0;
 
-  printf("this is my shit: %d and %d\n", lst.list[lst.index].lex, varsym);
-
-  if(lst.list[lst.index].lex != varsym)
+  if(lst.list[lst.index].lex != intsym)
     return;
 
+    // printf("this is indexxxx: %d\n", lst.index);
 
   do { // enter, we have a comma or terminal
+    // printf("what the f is here %d\n", lst.list[lst.index].lex);
 
     // terminal ident
     lst.index++;
-    if(lst.list[lst.index].type != identsym) {
-      printf("tx: %d\n", tx);
+    // printf("should be identsym: %d\n", lst.list[lst.index].lex);
 
+    if(lst.list[lst.index].lex != identsym) {
       error(0, 4);
     }
 
@@ -131,34 +138,129 @@ void varDeclaration(listy lst, stack* reg, instruction* code, int* addrPos, symb
     // printf("list index??? %d\n", lst.index);
 
     lst.index++;
-    table[tx].kind = 2;
-    strcpy(table[tx].name, lst.list[lst.index].words);
-    (*addrPos)++;
-    table[tx].level = 0;
-    table[tx].addr = *addrPos;
-    tx++;
-    i++;
+    // printf("get token? %d\n", lst.list[lst.index].lex);
 
+
+    table[tx].kind = 2;
+    // printf("this is my curr var: %s\n", lst.list[lst.index].words);
+    strcpy(table[tx].name, lst.list[lst.index].words);
+    addr++;
+    table[tx].level = 0;
+    table[tx].addr = addr;
+    // printf("my fricke addr: %d\n", table[tx-1].addr);
+    // emit(6, 0, table[tx].addr, 0, code);
+    tx++;
+
+
+    lst.index++;
 
   } while (lst.list[lst.index].lex == commasym);
 
-  lst.index++;
 
   if(lst.list[lst.index].lex != semicolonsym) {
     error(0, 5);
   }
+  // printf("this is my index inside varDec:%d\n", lst.index);
 
-  // emit(6, 0, i, reg, code);
+
 }
 
-void statement(listy lst, stack* reg, instruction* code, symbol* table) {
-  int i;
-
-  lst.index++;
+void statement(stack* reg, instruction* code, symbol* table) {
+  int i, cx1, cx2;
+  // printf("this is statement index:%d\n", lst.index);
+  // lst.index++;
   // printf("-------: %d\n", lst.list[lst.index].lex);
+
+
 
   if(lst.list[lst.index].lex == identsym) {
     lst.index++;
+
+
+
+    i = position(lst.list[lst.index].words, table, tx);
+
+    if(i == 0) {
+      error(0, 11);
+    }
+    else if(table[i].kind != 2) {
+      error(0, 12);
+    }
+    lst.index++;
+
+    // here or in there?------v
+    if(lst.list[lst.index].lex != becomessym) {
+      error(0, 3);
+    }
+
+    if(lst.list[lst.index].lex == becomessym) {
+      lst.index++;
+    }
+
+
+    expression(reg, code, table);
+
+    if(i != 0) {
+      emit(4, 0, table[i].addr, 0, code);
+    }
+
+  }
+  else if(lst.list[lst.index].lex == beginsym) {
+
+    printf("i know i made it here 00000\n");
+
+    lst.index++;
+    statement(reg, code, table);
+
+    while(lst.list[lst.index].lex == semicolonsym) {
+      lst.index++;
+      statement(reg, code, table);
+    }
+
+    lst.index++;
+    if(lst.list[lst.index].lex == endsym) {
+      error(0, 28);
+    }
+
+  }
+  else if(lst.list[lst.index].lex == ifsym) {
+    lst.index++;
+    condition(reg, code, table);
+    // more here
+    if(lst.list[lst.index].lex != thensym){
+      error(0, 16);
+    }
+
+    lst.index++;
+    emit(8, 0, 0, 0, code);
+    statement(reg, code, table);
+  }
+  else if(lst.list[lst.index].lex == whilesym) {
+    cx1 = cx;
+    lst.index++;
+    condition(reg, code, table);
+    cx2 = cx;
+    emit(8, 0, 0, 0, code);
+    //emit
+    if(lst.list[lst.index].lex == dosym) {
+      error(0, 18);
+    }
+    lst.index++;
+
+    statement(reg, code, table);
+    emit(7, 0, cx1, 0, code);
+
+    code[cx1].m = cx;
+  }
+  else if(lst.list[lst.index].lex == readsym) {
+
+    int i;
+    lst.index++;
+    emit(10, 0, 2, 0, code);
+
+    if(lst.list[lst.index].lex != identsym) {
+      error(0, 29);
+    }
 
     i = position(lst.list[lst.index].words, table, tx);
 
@@ -169,56 +271,132 @@ void statement(listy lst, stack* reg, instruction* code, symbol* table) {
       error(0, 12);
     }
 
-    // here or in there?------v
-    lst.index++;
-    if(lst.list[lst.index].type != becomessym) {
-      error(0, 3);
+    if(i != 0) {
+      emit(4, 0, table[i].addr, 0, code); // needs fixing
     }
+
+    lst.index++;
+
+    emit(3, 0, addr, 0, code);
+
+
+    //emit?
+    //emit
   }
-  expression(lst, reg, code, table);
-  //gen
+  else if(lst.list[lst.index].lex == writesym) {
 
+    int i;
+    lst.index++;
 
+    if(lst.list[lst.index].lex != identsym) {
+      error(0, 29);
+    }
+
+    i = position(lst.list[lst.index].words, table, tx);
+
+    if(i == 0) {
+      error(0, 11);
+    }
+    else if(table[i].kind != 2) {
+      error(0, 12);
+    }
+
+    emit(9, 0, 1, 0, code);
+    //emit?
+    //emit
+  }
 }
 
-void expression(listy lst, stack* reg, instruction* code, symbol* table) {
+void condition(stack* reg, instruction* code, symbol* table) {
+  if(lst.list[lst.index].lex == oddsym) {
+    lst.index++;
+    expression(reg, code, table);
+    emit(2, 0, 6, 0, code);
+  }
+  else {
+    expression(reg, code, table);
+
+    if (lst.list[lst.index].lex != eqlsym && lst.list[lst.index].lex != neqsym &&
+  			lst.list[lst.index].lex != lessym && lst.list[lst.index].lex != leqsym &&
+  			lst.list[lst.index].lex != gtrsym && lst.list[lst.index].lex != geqsym) {
+          error(0,30);
+        }
+
+    lst.index++;
+    expression(reg, code, table);
+
+    if (lst.list[lst.index].lex == eqlsym) {
+      emit(19, 0 , 0, 0, code);
+    }
+  	else if (lst.list[lst.index].lex == neqsym) {
+      emit(20, 0 , 0, 0, code);
+    }
+  	else if (lst.list[lst.index].lex == lessym) {
+      emit(21, 0 , 0, 0, code);
+    }
+  	else if (lst.list[lst.index].lex == leqsym) {
+      emit(22, 0 , 0, 0, code);
+    }
+  	else if (lst.list[lst.index].lex == gtrsym) {
+      emit(23, 0 , 0, 0, code);
+    }
+  	else {
+      emit(24, 0, 0, 0, code);
+    }
+  }
+}
+
+void expression(stack* reg, instruction* code, symbol* table) {
+
+
   if(lst.list[lst.index].lex == plussym || lst.list[lst.index].lex == minussym) {
     lst.index++;
-    term(lst, reg, code, table);
-    //more here
+
+    term(reg, code, table);
+
+    if(lst.list[lst.index].lex == minussym) {
+       emit(2, 0, 1, 0, code);
+    }
   }
+  else {
+    term(reg, code, table);
+  }
+
+
 
   while(lst.list[lst.index].lex == plussym || lst.list[lst.index].lex == minussym) {
     lst.index++;
-    term(lst, reg, code, table);
-
+    term(reg, code, table);
     if(lst.list[lst.index].lex == plussym) {
-      //gen
+      emit(2, 0, 2, 0, code);
     }
     else {
-      //gen
+      emit(2, 0, 3, 0, code);
     }
   }
 }
 
-void term(listy lst, stack* reg, instruction* code, symbol* table) {
-  factor(lst, reg, code, table);
+void term(stack* reg, instruction* code, symbol* table) {
+
+  factor(reg, code, table);
 
   while(lst.list[lst.index].lex == multsym || lst.list[lst.index].lex == slashsym) {
     lst.index++;
-    factor(lst, reg, code, table);
+    factor(reg, code, table);
 
     if(lst.list[lst.index].lex == multsym) {
-      //gen
+      emit(2, 0, 4, 0, code);
     }
     else{
-      //gem
+      emit(2, 0, 4, 0, code);
     }
   }
 }
 
-void factor(listy lst, stack* reg, instruction* code, symbol* table) {
+// nver calling factor
+void factor(stack* reg, instruction* code, symbol* table) {
   int i;
+
 
   if(lst.list[lst.index].lex == identsym) {
     lst.index++;
@@ -227,12 +405,15 @@ void factor(listy lst, stack* reg, instruction* code, symbol* table) {
     if(i == 0) {
       error(0, 11);
     }
+    //print out whats here
+    // printf("what is the kind %d\n", table[i].kind);
 
     if(table[i].kind == 2) {
-      //gen
+
+      emit(3, 0, addr, 0, code);
     }
     else if(table[i].kind == 1) {
-      //gen
+     emit(1, 0, table[i].val, 0, code);
     }
     else {
       error(0, 12);
@@ -241,11 +422,11 @@ void factor(listy lst, stack* reg, instruction* code, symbol* table) {
   }
   else if(lst.list[lst.index].lex == numbersym) {
     lst.index++;
-    //gen
+    // emit(1, 0, , code); put number here
   }
   else if(lst.list[lst.index].lex == lparentsym) {
     lst.index++;
-    expression(lst, reg, code, table);
+    expression(reg, code, table);
 
     if(lst.list[lst.index].lex == rparentsym) {
       lst.index++;
@@ -261,13 +442,6 @@ int position(char* id, symbol* table, int tx) {
   int i = tx - 1;
   int pos;
 
-  // printf("Hi you made it\n");
-  // printf("%d\n", table[1].kind);
-  // printf("the one we want %s, the one in the index %s\n", table[0].name, table[1].name);
-  // printf("%d\n", table[1].val);
-  // printf("%d\n", table[1].level);
-  // printf("%d\n", table[1].addr);
-
   while(i == 0) {
     if(strcmp(table[i].name, id) == 0) {
       break;
@@ -277,21 +451,27 @@ int position(char* id, symbol* table, int tx) {
     }
   }
 
+  // printf("kind: %d ", table[i].kind);
+  // printf("name: %s ", table[i].name);
+  // printf("val: %d ", table[i].val);
+  // printf("level: %d ", table[i].level);
+  // printf("addr: %d ", table[i].addr);
+  // printf("\n");
   return i;
 }
 
-// void emit(int op, int l, int m, int r, instruction* code) {
-//   if(cx > CODE_SIZE) {
-//     error(25);
-//   }
-//   else {
-//     code[cx].op = op; 	//opcode
-//     code[cx].l = l;	// lexicographical level
-//     code[cx].m = m;	// modifier
-//     cx++;
-//   }
-// }
-
+void emit(int op, int l, int m, int r, instruction* code) {
+  if(cx > CODE_SIZE) {
+    error(0, 25);
+  }
+  else {
+    code[cx].op = op; 	// opcode
+    code[cx].l = l;	    // lexicographical level
+    code[cx].m = m;	    // modifier
+    //code[cx].r =
+    cx++;
+  }
+}
 
 // Recommended data structure for the symbol.
 // typedef struct {
@@ -312,10 +492,10 @@ int position(char* id, symbol* table, int tx) {
 //
 //   return
 // }
-// void procDeclaration(listy lst, stack* reg, instruction* code, symbol* table) {
+// void procDeclaration(stack* reg, instruction* code, symbol* table) {
 //   while(lst.list[lst.index].lex != procsym) {
 //     // temp = code->codeeSize
-//     // gen
+//     // emit
 //
 //     lst.index++;
 //     if(lst.list[lst.index].lex != identsym) {
@@ -332,14 +512,13 @@ int position(char* id, symbol* table, int tx) {
 //       error(0, 5);
 //     }
 //
-//     // gen
-//     // block(lst, )
+//     // emit
+//     // block()
 //   }
 // }
 
-
-void error (int recovery, int n) {
-	isCorrect = 1;
+void error (int r, int n) {
+	correct = 1;
 
 	switch (n) {
 		case 0:
@@ -435,6 +614,9 @@ void error (int recovery, int n) {
 		case 30:
 			printf("Compare operator expected.\n");
 			break;
+    case 31:
+			printf("var already declared.\n");
+			break;
     case 32:
       printf("procedure found, exit.");
       break;
@@ -443,7 +625,4 @@ void error (int recovery, int n) {
 			break;
 	}
 
-  // if (!recovery) {
-	// 	exit(1);
-  // }
 }

@@ -11,16 +11,16 @@
 #define MAX_LEXI_LEVELS 3
 
 typedef struct {
-  int op; // Op code
+  int op; // Op codee
   int r;  // Register
   int l;  // L
   int m;  // M
-} instruction;
+} instruc;
 
-// Code array
-instruction code[MAX_CODE_LENGTH];
+// codee array
+instruc codee[MAX_CODE_LENGTH];
 
-instruction ir;  // instruction register
+instruc ir;  // instruc register
 
 
 
@@ -38,14 +38,14 @@ int bp = 1;      // base pointer
 int pc = 0;      // program counter
 int rf[8];       // register file
 
-// Length of code
-int codeLen = 0;
+// Length of codee
+int codeeLen = 0;
 
 // Enter the virtual machine
 void pMachine() {
 
   FILE *ifp, *ofp;
-  ifp = fopen("input.txt", "r");
+  ifp = fopen("parse.txt", "r");
 
   int op = 0;
   int r = 0;
@@ -61,23 +61,26 @@ void pMachine() {
     fscanf(ifp, "%d", &m);
 
 
-    // Put the values in our code
-    code[len].op = op;
-    code[len].r = r;
-		code[len].l = l;
-		code[len].m = m;
+    // Put the values in our codee
+    codee[len].op = op;
+    codee[len].r = r;
+		codee[len].l = l;
+		codee[len].m = m;
 
     len++;
 
+    if(len > 1000) break;
   }
-  codeLen = len;
-
+  codeeLen = len;
+  fclose(ifp);
 
   printf("Stack trace:\nInitial Values\t\t\t\tpc\tbp\tsp\n");
 
-  // Enter while loop for each instruction
+  int ii = 0;
+  // Enter while loop for each instruc
   while(halt != 1) {
-
+    ii++;
+    if(ii > 1000) break;
     // Print PC
     printf("%d\t", pc);
 
@@ -109,13 +112,13 @@ void pMachine() {
 }
 
 // Run the Fetch Cycle:
-// Put values in instruction register,
+// Put values in instruc register,
 // and increment PC.
 void fetchCycle() {
-	ir.op = code[pc].op;
-	ir.r = code[pc].r;
-	ir.l = code[pc].l;
-	ir.m = code[pc].m;
+	ir.op = codee[pc].op;
+	ir.r = codee[pc].r;
+	ir.l = codee[pc].l;
+	ir.m = codee[pc].m;
 
   pc++;
 }

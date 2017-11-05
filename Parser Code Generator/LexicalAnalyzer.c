@@ -118,7 +118,7 @@ listy lexy() {
         // printf("%s\t\t%d\n", word, dosym);
       }
       else if(strcmp(word, "var") == 0) {
-        lex[lexPosition] = varsym;
+        lex[lexPosition] = intsym;
         lexPosition++;
 
         // printf("%s\t\t%d\n", word, varsym);
@@ -381,17 +381,15 @@ listy lexy() {
     // printf("%d ", lex[i]);
 		myList.list[idx].lex = lex[i];
 		myList.size = s++;
-		idx++;
 
-    if(lex[i] == 2 || lex[i] == 3) {
+    if(lex[i] == 2) {
       // Print each var name or number
       // printf("%s ", id[j]);
 			strcpy(myList.list[idx].words, id[j]);
-			myList.size = s++;
 			myList.list[idx].type = 2;
-			idx++;
       j++;
     }
+    idx++;
   }
   // printf("\n");
 
