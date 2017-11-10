@@ -24,10 +24,8 @@ int main(int argc, char* argv[]) {
   int runVM = 0;
   int runParser = 0;
 
-  listy myListy;
+  listy myListy = lexy();
   instruction code;
-  stack* reg = stackInit();
-
 
   while( (cmd = getopt(argc, argv, "lav")) != 1) {
     if(cmd == 'l') {
@@ -47,13 +45,16 @@ int main(int argc, char* argv[]) {
 
   printf("in:\n");
   if(runLexer == 1) {
-    myListy = lexy();
 
     printf("Lexeme List:\n");
     int i = 0;
 
     for(i = 0; i < myListy.size; i++) {
       if(myListy.list[i].type == 2) {
+        printf("%d ", myListy.list[i].lex);
+        printf("%s ", myListy.list[i].words);
+      }
+      else if(myListy.list[i].type == 1) {
         printf("%d ", myListy.list[i].lex);
         printf("%s ", myListy.list[i].words);
       }
@@ -69,6 +70,10 @@ int main(int argc, char* argv[]) {
         printSymbols(myListy.list[i].lex);
         printf("%s ", myListy.list[i].words);
       }
+      else if(myListy.list[i].type == 1) {
+        printSymbols(myListy.list[i].lex);
+        printf("%s ", myListy.list[i].words);
+      }
       else {
         printSymbols(myListy.list[i].lex);
       }
@@ -79,8 +84,7 @@ int main(int argc, char* argv[]) {
 
   printf("\nout:\n");
   if(runParser == 1) {
-    //myListy = lexy();
-    parse(reg, &code);
+    parse(&code, &myListy);
   }
 
   if(runVM == 1) {

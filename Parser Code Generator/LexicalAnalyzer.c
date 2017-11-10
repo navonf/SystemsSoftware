@@ -43,13 +43,13 @@ listy lexy() {
   // Scan in input file
   ifp = fopen("input.txt", "r");
 
-  // printf("Source Program: \n");
+  printf("Source Program: \n");
 
   // Input
   while(fscanf(ifp, "%c", &c) != EOF) {
-    // printf("%c", c);
+    printf("%c", c);
   }
-
+  printf("\n");
   // Reset ifp
   fseek(ifp, 0, SEEK_SET);
 
@@ -234,9 +234,10 @@ listy lexy() {
       lexPosition++;
 
       // Add the number to our Lexeme List
-      // printf("%s\t\t%d\n", number, numbersym);
       strcpy(id[idRow], number);
+      // printf("bruh check this: ----%s\t\t%d\n", id[idRow], numbersym);
       idRow++;
+
 
       fseek(ifp, -1, SEEK_CUR);
     }
@@ -377,21 +378,31 @@ listy lexy() {
   int j = 0;
 	int idx = 0;
 	int s = 1;
+  printf("LEXXXLISTTTTT \n");
+
   for(i = 0; i < lexPosition; i++) {
-    // printf("%d ", lex[i]);
+    printf("%d ", lex[i]);
 		myList.list[idx].lex = lex[i];
 		myList.size = s++;
 
     if(lex[i] == 2) {
       // Print each var name or number
-      // printf("%s ", id[j]);
+      printf("%s ", id[j]);
 			strcpy(myList.list[idx].words, id[j]);
 			myList.list[idx].type = 2;
       j++;
     }
+
+    if(lex[i] == 3) {
+      printf("%s ", id[j]);
+      strcpy(myList.list[idx].words, id[j]);
+      myList.list[idx].type = 1;
+      j++;
+    }
+
     idx++;
   }
-  // printf("\n");
+  printf("\n");
 
   // return tokens
 	return myList;

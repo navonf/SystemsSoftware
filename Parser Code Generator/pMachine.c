@@ -5,10 +5,7 @@
 
 #include "./pMachine.h"
 
-// Constants
-#define MAX_STACK_HEIGHT 2000
-#define MAX_CODE_LENGTH 500
-#define MAX_LEXI_LEVELS 3
+
 
 typedef struct {
   int op; // Op codee

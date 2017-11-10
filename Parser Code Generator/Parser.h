@@ -10,16 +10,10 @@
 #include "./LexicalAnalyzer.h"
 #include "./pMachine.h"
 #include "./Stack.h"
-// #include "./CodeGenerator.h"
+#include "./CodeGenerator.h"
 
 #define CODE_SIZE 1000
 
-typedef struct {
-  int op; // Op code
-  int r;  // Register
-  int l;  // L
-  int m;  // M
-} instruction;
 
 // code array
 instruction code[500];
@@ -35,18 +29,17 @@ typedef struct {
 
 
 
-void parse(stack* reg, instruction* code);
+void parse(instruction* code, listy* lst);
 void error (int recovery, int n);
-void block(stack* reg, instruction* code, symbol* table);
-void constDeclaration(stack* reg, instruction* code, symbol* table);
-void varDeclaration(stack* reg, instruction* code, symbol* table);
-void procDeclaration(stack* reg, instruction* code, symbol* table);
-void statement(stack* reg, instruction* code, symbol* table);
-void emit(int op, int l, int m, int r, instruction* code);
-void expression(stack* reg, instruction* code, symbol* table);
-void condition(stack* reg, instruction* code, symbol* table);
-void term(stack* reg, instruction* code, symbol* table);
-void factor(stack* reg, instruction* code, symbol* table);
+void block(stack* reg, instruction* code, symbol* table, listy* lst);
+void constDeclaration(stack* reg, instruction* code, symbol* table, listy* lst);
+void varDeclaration(stack* reg, instruction* code, symbol* table, listy* lst);
+void procDeclaration(stack* reg, instruction* code, symbol* table, listy* lst);
+void statement(stack* reg, instruction* code, symbol* table, listy* lst);
+void expression(stack* reg, instruction* code, symbol* table, listy* lst);
+void condition(stack* reg, instruction* code, symbol* table, listy* lst);
+void term(stack* reg, instruction* code, symbol* table, listy* lst);
+void factor(stack* reg, instruction* code, symbol* table, listy* lst);
 int position(char* id, symbol* table, int tx);
 
 #endif
