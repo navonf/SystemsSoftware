@@ -3,7 +3,6 @@
 
 
 #include "Stack.h"
-#include "pMachine.h"
 
 typedef struct memory {
 	int op; // OP code
@@ -14,7 +13,7 @@ typedef struct memory {
 
 // this wrapper array keeps track of the codeSize, we will need in Parser.c
 typedef struct {
-	mem memArr[MAX_CODE_LENGTH];
+	mem memArr[1000];
 	int codeSize;
 } instruction;
 

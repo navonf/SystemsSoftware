@@ -8,8 +8,9 @@
 #include <string.h>
 
 #include "./LexicalAnalyzer.h"
-#include "./pMachine.h"
+// #include "./pMachine.h"
 #include "./Stack.h"
+// #include "./vm.h"
 #include "./CodeGenerator.h"
 
 #define CODE_SIZE 1000
@@ -35,7 +36,7 @@ void block(stack* reg, instruction* code, symbol* table, listy* lst);
 void constDeclaration(stack* reg, instruction* code, symbol* table, listy* lst);
 void varDeclaration(stack* reg, instruction* code, symbol* table, listy* lst);
 void procDeclaration(stack* reg, instruction* code, symbol* table, listy* lst);
-void statement(stack* reg, instruction* code, symbol* table, listy* lst);
+void statement(stack* reg, instruction* code, symbol* table, listy* lst, int headIndex);
 void expression(stack* reg, instruction* code, symbol* table, listy* lst);
 void condition(stack* reg, instruction* code, symbol* table, listy* lst);
 void term(stack* reg, instruction* code, symbol* table, listy* lst);

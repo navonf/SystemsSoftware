@@ -11,8 +11,6 @@
 #include "./LexicalAnalyzer.h"
 
 
-
-
 // The Lexeme list
 int lex[1000];
 
@@ -394,7 +392,7 @@ listy lexy() {
     }
 
     if(lex[i] == 3) {
-      printf("%s ", id[j]);
+      printf("my mf numbersym num: %s ", id[j]);
       strcpy(myList.list[idx].words, id[j]);
       myList.list[idx].type = 1;
       j++;

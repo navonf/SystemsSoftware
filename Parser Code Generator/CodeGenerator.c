@@ -72,24 +72,27 @@ void emit(int opr, int l, int m, stack* stacky, instruction* code) {
 
 			case 9:
 				// SIO Write
-				code->memArr[code->codeSize].op = opr;
-				stackPop(stacky);
-				code->memArr[code->codeSize].r = stacky->height;
-				stackPush(stacky->height, stacky);
-				break;
-
-			case 10:
-				// SIO Read
-				code->memArr[code->codeSize].op = opr;
-				stackPop(stacky);
-				code->memArr[code->codeSize].r  = stacky->height;
-				stackPush(stacky->height, stacky);
-				break;
-
-			case 11:
-				// SIO Halt
-				code->memArr[code->codeSize].op = opr;
-				break;
+				if(code->memArr[code->codeSize].m == 1){
+					code->memArr[code->codeSize].op = opr;
+					code->memArr[code->codeSize].op = m;
+					stackPop(stacky);
+					code->memArr[code->codeSize].r = stacky->height;
+					stackPush(stacky->height, stacky);
+					break;
+				}
+				else if(code->memArr[code->codeSize].m == 2){
+					code->memArr[code->codeSize].op = opr;
+					code->memArr[code->codeSize].m = m;
+					stackPop(stacky);
+					code->memArr[code->codeSize].r  = stacky->height;
+					stackPush(stacky->height, stacky);
+					break;
+				}
+				else {
+					code->memArr[code->codeSize].op = opr;
+					code->memArr[code->codeSize].m = m;
+					break;
+				}
 
 			case 12:
 				// NEG
