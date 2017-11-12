@@ -71,10 +71,9 @@ void block(stack* reg, instruction* code, symbol* table, listy* lst) {
 
   constDeclaration(reg, code, table, lst);
   varDeclaration(reg, code, table, lst);
-  // procDeclaration(reg, code, table);
+  procDeclaration(reg, code, table, lst);
 
   // CHECK STATMENT
-  printf("in block: the index should not be 0: %d, should be: %d\n", lst->index, beginsym);
 
   statement(reg, code, table, lst);
 
@@ -210,16 +209,13 @@ void statement(stack* reg, instruction* code, symbol* table, listy* lst) {
       lst->index++;
     }
 
-
     expression(reg, code, table, lst);
 
     if(i != 0) {
       emit(4, 0, table[i].addr, 0, code);
     }
 
-
-
-  }
+  } // here we handle our "begin"
   else if(lst->list[lst->index].lex == beginsym) {
 
     printf("made it to begin!\n");
@@ -504,7 +500,7 @@ int position(char* id, symbol* table, int tx) {
 //   return
 // }
 void procDeclaration(stack* reg, instruction* code, symbol* table, listy* lst) {
-  while(lst->list[lst->index].lex != procsym) {
+  while(lst->list[lst->index].lex == procsym) {
     // temp = code->codeeSize
     // emit
 
