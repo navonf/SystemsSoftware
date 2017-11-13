@@ -110,7 +110,7 @@ void constDeclaration(stack* reg, instruction* code, symbol* table, listy* lst) 
     // add the constant to the symbol table
     table[tx].kind = 1;
     table[tx].level = 0;
-    printf("curr: %d", lst->list[lst->index].lex);
+
     table[tx].val = lst->list[lst->index].lex;
     tx++;
 

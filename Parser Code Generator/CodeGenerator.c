@@ -94,7 +94,7 @@ void emit(int opr, int l, int m, stack* stacky, instruction* code) {
 					break;
 				}
 
-			case 12:
+			case 10:
 				// NEG
 				code->memArr[code->codeSize].op = opr;
 				code->memArr[code->codeSize].l = stackPop(stacky);
@@ -102,7 +102,7 @@ void emit(int opr, int l, int m, stack* stacky, instruction* code) {
 				stackPush(stacky->height, stacky);
 				break;
 
-			case 13:
+			case 11:
 				// ADD
 				stackPop(stacky);
 				code->memArr[code->codeSize].op = opr;
@@ -111,7 +111,7 @@ void emit(int opr, int l, int m, stack* stacky, instruction* code) {
 				code->memArr[code->codeSize].r = stacky->height-1;
 			    break;
 
-			case 14:
+			case 12:
 				// SUB
 				stackPop(stacky);
 				code->memArr[code->codeSize].op = opr;
@@ -120,7 +120,7 @@ void emit(int opr, int l, int m, stack* stacky, instruction* code) {
 				code->memArr[code->codeSize].r = stacky->height-1;
 				break;
 
-			case 15:
+			case 13:
 				// MUL
 				stackPop(stacky);
 				code->memArr[code->codeSize].op = opr;
@@ -129,7 +129,7 @@ void emit(int opr, int l, int m, stack* stacky, instruction* code) {
 				code->memArr[code->codeSize].r = stacky->height-1;
 				break;
 
-			case 16:
+			case 14:
 				// Div
 				stackPop(stacky);
 				code->memArr[code->codeSize].op = opr;
@@ -138,14 +138,14 @@ void emit(int opr, int l, int m, stack* stacky, instruction* code) {
 				code->memArr[code->codeSize].r = stacky->height-1;
 				break;
 
-			case 17:
+			case 15:
 				// ODD
 				code->memArr[code->codeSize].op = opr;
 				code->memArr[code->codeSize].r = stackPop(stacky);
 				stackPush(stacky->height, stacky);
 	 			break;
 
-	 		case 18:
+	 		case 16:
 	 			// MOD
 				stackPop(stacky);
 				code->memArr[code->codeSize].op = opr;
@@ -154,7 +154,7 @@ void emit(int opr, int l, int m, stack* stacky, instruction* code) {
 				code->memArr[code->codeSize].r = stacky->height-1;
 	 			break;
 
-	 		case 19:
+	 		case 17:
 	 			// EQL
 				stackPop(stacky);
 				code->memArr[code->codeSize].op = opr;
@@ -163,7 +163,7 @@ void emit(int opr, int l, int m, stack* stacky, instruction* code) {
 				code->memArr[code->codeSize].r = stacky->height-1;
 	 			break;
 
-	 		case 20:
+	 		case 18:
 	 			// NEQ
 				stackPop(stacky);
 				code->memArr[code->codeSize].op = opr;
@@ -172,7 +172,7 @@ void emit(int opr, int l, int m, stack* stacky, instruction* code) {
 				code->memArr[code->codeSize].r = stacky->height-1;
 	 			break;
 
-	 		case 21:
+	 		case 19:
 	 			// LSS
 				stackPop(stacky);
 				code->memArr[code->codeSize].op = opr;
@@ -181,7 +181,7 @@ void emit(int opr, int l, int m, stack* stacky, instruction* code) {
 				code->memArr[code->codeSize].r = stacky->height-1;
 	 			break;
 
-	 		case 22:
+	 		case 20:
 	 			// LEQ
 				stackPop(stacky);
 				code->memArr[code->codeSize].op = opr;
@@ -190,7 +190,7 @@ void emit(int opr, int l, int m, stack* stacky, instruction* code) {
 				code->memArr[code->codeSize].r = stacky->height-1;
 	 			break;
 
-	 		case 23:
+	 		case 21:
 	 			// GTR
 				stackPop(stacky);
 				code->memArr[code->codeSize].op = opr;
@@ -199,7 +199,7 @@ void emit(int opr, int l, int m, stack* stacky, instruction* code) {
 				code->memArr[code->codeSize].r = stacky->height-1;
 	 			break;
 
-	 		case 24:
+	 		case 22:
 	 			// GEQ
 				stackPop(stacky);
 				code->memArr[code->codeSize].op = opr;
