@@ -9,6 +9,7 @@ int tx = 1;
 int cx = 0;
 int correct = 0;
 int addr = 4;
+int lev = 0;
 
 
 void parse(instruction* code, listy* lst) {
@@ -52,82 +53,72 @@ void parse(instruction* code, listy* lst) {
 }
 
 void block(stack* reg, instruction* code, symbol* table, listy* lst) {
-  // printf("\nSymbols IN PARSER:\n");
-  // int i = 0;
-  // for(i = 0; i < lst->size; i++) {
-  //   printf("SYMBOL (%d) - ", i);
-  //   if(lst->list[i].type == 2) {
-  //     printf("lex: %d ", lst->list[i].lex);
-  //     printf("char: %s ", lst->list[i].words);
-  //   }
-  //   else if(lst->list[i].type == 1) {
-  //     printf("lex: %d ", lst->list[i].lex);
-  //     printf("number: %s ", lst->list[i].words);
-  //   }
-  //   else {
-  //     printf("lex: %d ", lst->list[i].lex);
-  //   }
-  // }
-  int headIndex = -1;
 
   constDeclaration(reg, code, table, lst);
   varDeclaration(reg, code, table, lst);
   procDeclaration(reg, code, table, lst);
 
   // CHECK STATMENT
-  statement(reg, code, table, lst, headIndex);
+  statement(reg, code, table, lst);
 
 }
 
 void constDeclaration(stack* reg, instruction* code, symbol* table, listy* lst) {
+  int curr = 0;
+
+
+
   if(lst->list[lst->index].lex != constsym)
     return;
 
-  do { // enter, we have a comma or terminal
 
+
+  do { // enter, we have a comma or terminal
+    printf("IN CONST \t -this is our curr sym: %d\n", lst->list[lst->index].lex);
     // terminal indent
     lst->index++;
 
     if(lst->list[lst->index].lex != identsym) {
-      // error(0, 4);
-      printf("const\n");
+      error(0, 4);
     }
 
     strcpy(table[tx].name, lst->list[lst->index].words);
 
     // Terminal equalsym
-    lst->index++;
     if(lst->list[lst->index].lex != eqlsym) {
-      // error(0, 0);
+      error(0, 0);
     }
 
     // Terminal if we get a numbersym aka a literal
-    lst->index++;
     if(lst->list[lst->index].lex != numbersym) {
-      // error(0, 2);
+      error(0, 2);
     }
 
     // add the constant to the symbol table
     table[tx].kind = 1;
     table[tx].level = 0;
-
-    table[tx].val = lst->list[lst->index].lex;
+    table[tx].val = atoi(lst->list[lst->index].words);
     tx++;
+    curr++;
+
 
     lst->index++;
-
   } while (lst->list[lst->index].lex == commasym);
 
 
   if(lst->list[lst->index].lex != semicolonsym) {
-    // error(0, 5);
+    error(0, 5);
   }
+
+  printf("IN CONST \t -this is our curr sym?: %d\n", lst->list[lst->index].lex);
+
+  lst->index++;
 }
 
 void varDeclaration(stack* reg, instruction* code, symbol* table, listy* lst) {
   int curr = 0;
 
-  if(lst->list[lst->index].lex != intsym)
+  if(lst->list[lst->index].lex != varsym)
     return;
 
     // printf("this is indexxxx: %d\n", lst->index);
@@ -143,7 +134,7 @@ void varDeclaration(stack* reg, instruction* code, symbol* table, listy* lst) {
     //lst->index++;
 
     if(lst->list[lst->index].lex != identsym) {
-      error(0, 4);
+      // error(0, 4);
     }
 
     // printf("tx dos: %d\n", tx);
@@ -154,7 +145,7 @@ void varDeclaration(stack* reg, instruction* code, symbol* table, listy* lst) {
 
     // printf("get token? %d\n", lst->list[lst->index].lex);
     table[tx].kind = 2;
-    // printf("IN VAR DEC \t -this is my  lex: %d curr var: %s\n", lst->list[lst->index].lex, lst->list[lst->index].words);
+    printf("IN VAR DEC \t -this is my  lex: %d curr var: %s\n", lst->list[lst->index].lex, lst->list[lst->index].words);
     strcpy(table[tx].name, lst->list[lst->index].words);
     addr++;
     table[tx].level = 0;
@@ -163,7 +154,8 @@ void varDeclaration(stack* reg, instruction* code, symbol* table, listy* lst) {
     curr++;
 
     lst->index++;
-    // printf("IN VAR DEC \t -should be comma: %d\n", lst->list[lst->index].lex);
+    // printf("IN VAR DEC \t -this is the current symbol: %d, should be:: %d\n", lst->list[lst->index].lex, commasym);
+
 
   } while (lst->list[lst->index].lex == commasym);
 
@@ -171,15 +163,15 @@ void varDeclaration(stack* reg, instruction* code, symbol* table, listy* lst) {
   if(lst->list[lst->index].lex != semicolonsym) {
     error(0, 5);
   }
-  // printf("this is my index inside varDec:%d\n", lst->index);
+  printf("this is my index inside varDec:%d\n", lst->index);
 
   emit(6, 0, curr, reg, code);
   lst->index++;
 
-  printf("this is the current symbol: %d, should be: %d\n", lst->list[lst->index].lex, beginsym);
+  printf("IN VAR DEC \t -this is the current symbol: %d, should be: %d\n", lst->list[lst->index].lex, procsym);
 }
 
-void statement(stack* reg, instruction* code, symbol* table, listy* lst, int headIndex) {
+void statement(stack* reg, instruction* code, symbol* table, listy* lst) {
   int i, cx1, cx2;
   // printf("this is statement index:%d\n", lst->index);
   // lst->index++;
@@ -187,7 +179,7 @@ void statement(stack* reg, instruction* code, symbol* table, listy* lst, int hea
 
 
   if(lst->list[lst->index].lex == identsym) {
-    printf("IN STATEMENT \t -after first beginsym if statement we go into identsym if statement; %d, head is still 2: %d\n", lst->list[lst->index].lex, headIndex);
+    printf("IN STATEMENT \t -after first beginsym if statement we go into identsym if statement; %d \n", lst->list[lst->index].lex);
     lst->index++;
     printf("IN STATEMENT \t -get toke: %d should be 20\n", lst->list[lst->index].lex);
     i = position(lst->list[lst->index].words, table, tx);
@@ -221,13 +213,12 @@ void statement(stack* reg, instruction* code, symbol* table, listy* lst, int hea
 
     lst->index++;
     printf("IN STATEMENT \t -in begin after first get token; %d \n", lst->list[lst->index].lex);
-    headIndex = lst->index;
-    statement(reg, code, table, lst, headIndex);
+    statement(reg, code, table, lst);
 
 
     while(lst->list[lst->index].lex == semicolonsym) {
       lst->index++;
-      statement(reg, code, table, lst, headIndex);
+      statement(reg, code, table, lst);
     }
 
     lst->index++;
@@ -248,7 +239,7 @@ void statement(stack* reg, instruction* code, symbol* table, listy* lst, int hea
 
     lst->index++;
     emit(8, 0, 0, reg, code);
-    statement(reg, code, table, lst, headIndex);
+    statement(reg, code, table, lst);
   }
   else if(lst->list[lst->index].lex == whilesym) {
     cx1 = cx;
@@ -262,7 +253,7 @@ void statement(stack* reg, instruction* code, symbol* table, listy* lst, int hea
     }
     lst->index++;
 
-    statement(reg, code, table, lst, headIndex);
+    statement(reg, code, table, lst);
     emit(7, 0, cx1, reg, code);
 
     code->memArr[cx1].m = cx;
@@ -432,10 +423,10 @@ void factor(stack* reg, instruction* code, symbol* table, listy* lst) {
 
   }
   else if(lst->list[lst->index].lex == numbersym) {
-    printf("this is our val: %d\n", atoi(lst->list[lst->index].words));
+    printf("IN FACTOR \t -this is our val: %d\n", atoi(lst->list[lst->index].words));
     emit(1, 0, atoi(lst->list[lst->index].words), reg, code);
     lst->index++;
-    printf("next token, after numbersym: %d\n", lst->list[lst->index].lex);
+    printf("IN FACTOR \t -next token, after numbersym: %d\n", lst->list[lst->index].lex);
   }
   else if(lst->list[lst->index].lex == lparentsym) {
     lst->index++;
@@ -506,30 +497,78 @@ int position(char* id, symbol* table, int tx) {
 //   return
 // }
 void procDeclaration(stack* reg, instruction* code, symbol* table, listy* lst) {
-  while(lst->list[lst->index].lex == procsym) {
-    // temp = code->codeeSize
-    // emit
+  int procSize;
 
+  printf("IN PROC \t -this is the current symbol: %d, should be: %d, is it a Proc?: %d\n", lst->list[lst->index].lex, procsym, lst->list[lst->index].isProc);
+  while(lst->list[lst->index].isProc == 1) {
+    printf("IN PROC \t -begining, this is our curr sym: %d\n", lst->list[lst->index].lex);
+
+    // keep track of our size
+    procSize = code->codeSize;
+
+    emit(7, 0, 0, reg, code);
     lst->index++;
+
+    printf("IN PROC \t -after first gettoken(), this is our curr sym: %d\n", lst->list[lst->index].lex);
+
+
     if(lst->list[lst->index].lex != identsym) {
-      printf("proc\n");
       // error(0, 4);
     }
 
+    // Insert into Sym table
     table[tx].kind = 3;
     strcpy(table[tx].name, lst->list[lst->index].words);
-    // table[tx].level = trueL++;
-    // table[tx].addr = code->codeeSize;
+    table[tx].level = lev++;
+    table[tx].addr = code->codeSize;
+    printf("IN PROC \t -before copy table is made %d\n", lst->list[lst->index].lex);
+
+    // send our temp smybol table in block
+
+    symbol newTable[1000];
+    int i =0;
+    // for(i = 0; i < 89; i++) {
+    //   newTable[i].kind = table[i].kind;
+    //   strcpy(newTable[i].name, table[i].name);
+    //   newTable[i].val = table[i].val;
+    //   newTable[i].level = table[i].level;
+    //   newTable[i].addr = table[i].addr;
+    // }
+    // printf("IN PROC \t -after copy table is made %d\n", lst->list[lst->index].lex);
+
 
     lst->index++;
-    if(lst->list[lst->index].lex != semicolonsym) {
-      // error(0, 5);
+
+    if(lst->list[lst->index].lex == semicolonsym) {
+      lst->index++;
     }
 
-    // emit
-    // block()
+    emit(6, 0, 4, reg, code);
+
+    //void block(stack* reg, instruction* code, symbol* table, listy* lst);
+    block(reg, code, newTable, lst);
+    emit(2, 0, 0, reg, code);
+
+    if(lst->list[lst->index].lex != semicolonsym) {
+      error(0, 5);
+    }
+
+    lev--;
+    code->memArr[procSize].m = code->codeSize;
+
+    printf("IN PROC \t -after secon gettoken(), this is our curr sym: %d\n", lst->list[lst->index].lex);
+
   }
 }
+
+// typedef struct {
+// 	int kind; 		  // const = 1, var = 2, proc = 3
+// 	char name[12];	// name up to 11 chars
+// 	int val; 		    // number (ASCII value)
+// 	int level; 		  // L level
+// 	int addr; 		  // M address
+// } symbol;
+
 
 void error(int r, int n) {
 	correct = 1;

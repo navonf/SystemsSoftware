@@ -88,10 +88,15 @@ int main(int argc, char* argv[]) {
     int i = 0;
 
     for(i = 0; i < myListy.size; i++) {
+      // prints intssym and name
       if(myListy.list[i].type == 2) {
         printf("%d ", myListy.list[i].lex);
         printf("%s ", myListy.list[i].words);
-      }
+      } // prints numbersym and value
+      else if(myListy.list[i].type == 4) {
+        printf("%d ", myListy.list[i].lex);
+        printf("%s ", myListy.list[i].words);
+      } // prints constsym and values
       else if(myListy.list[i].type == 1) {
         printf("%d ", myListy.list[i].lex);
         printf("%s ", myListy.list[i].words);
@@ -99,12 +104,22 @@ int main(int argc, char* argv[]) {
       else {
         printf("%d ", myListy.list[i].lex);
       }
+
+      if(myListy.list[i].isProc == 1)
+        printf("%d ", myListy.list[i].isProc);
+
+      printf(" | ");
+
     }
 
     printf("\nSymbols:\n");
 
     for(i = 0; i < myListy.size; i++) {
       if(myListy.list[i].type == 2) {
+        printSymbols(myListy.list[i].lex);
+        printf("%s ", myListy.list[i].words);
+      }
+      else if(myListy.list[i].type == 4) {
         printSymbols(myListy.list[i].lex);
         printf("%s ", myListy.list[i].words);
       }
@@ -236,7 +251,7 @@ void printSymbols(int num) {
     printf("constsym ");
   }
   else if(num == 29) {
-    printf("intsym ");
+    printf("varsym ");
   }
   else if(num == 30) {
     printf("procsym ");
@@ -273,8 +288,8 @@ void printSymbols(int num) {
      // Put the values in our code_vm
      code_vm[len].op = op;
      code_vm[len].r = r;
- 		code_vm[len].l = l;
- 		code_vm[len].m = m;
+ 		 code_vm[len].l = l;
+ 	   code_vm[len].m = m;
 
      len++;
    }
@@ -287,7 +302,7 @@ void printSymbols(int num) {
 
  // Enter the virtual machine
  void pMachine() {
-   printf("stack_vm trace:\nInitial Values\t\t\t\tpc\tbp\tsp\n");
+   printf("\nStack trace:\nInitial Values\t\t\t\tpc\tbp\tsp\n");
 
    // Enter while loop for each instruct
    while(halt != 1) {

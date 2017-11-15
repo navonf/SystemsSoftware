@@ -11,7 +11,7 @@ typedef enum {
 	leqsym, gtrsym, geqsym, lparentsym, rparentsym,
 	commasym, semicolonsym, periodsym, becomessym,
 	beginsym, endsym, ifsym, thensym, whilesym, dosym,
-	callsym, constsym, intsym, procsym, writesym,
+	callsym, constsym, varsym, procsym, writesym,
 	readsym , elsesym
 } token_type;
 
@@ -20,6 +20,7 @@ typedef struct {
 	int lex;
 	char words[11];
   int type;
+	int isProc;
 } lexList;
 
 // wrapper so we can keep the length

@@ -28,15 +28,13 @@ typedef struct {
 	int addr; 		  // M address
 } symbol;
 
-
-
 void parse(instruction* code, listy* lst);
 void error (int recovery, int n);
 void block(stack* reg, instruction* code, symbol* table, listy* lst);
 void constDeclaration(stack* reg, instruction* code, symbol* table, listy* lst);
 void varDeclaration(stack* reg, instruction* code, symbol* table, listy* lst);
 void procDeclaration(stack* reg, instruction* code, symbol* table, listy* lst);
-void statement(stack* reg, instruction* code, symbol* table, listy* lst, int headIndex);
+void statement(stack* reg, instruction* code, symbol* table, listy* lst);
 void expression(stack* reg, instruction* code, symbol* table, listy* lst);
 void condition(stack* reg, instruction* code, symbol* table, listy* lst);
 void term(stack* reg, instruction* code, symbol* table, listy* lst);
