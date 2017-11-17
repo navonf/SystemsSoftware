@@ -32,6 +32,8 @@ void parse(instruction* code, listy* lst) {
   }
 
   emit(9, 0, 3, reg, code);
+  printf("IN PARSE DEC \t -this is the current symbol: %d\n", lst->list[lst->index].lex);
+
 
   if(correct == 0) {
     printf("\nThe program is syntactically correct!\n");
@@ -206,7 +208,17 @@ void statement(stack* reg, instruction* code, symbol* table, listy* lst) {
     }
 
     printf("IN STATEMENT \t -this is a semi?: %d, semi is %d\n", lst->list[lst->index].lex, semicolonsym);
-  } // here we handle our "begin"
+  }
+  else if(lst->list[lst->index].lex == callsym) {
+    lst->index++;
+
+    i = position(lst->list[lst->index].words, table, tx);
+
+    if(table[i].kind == 3) {
+      
+    }
+
+  }
   else if(lst->list[lst->index].lex == beginsym) {
 
     printf("IN STATEMENT \t -made it to begin token: %d!\n", lst->list[lst->index].lex);

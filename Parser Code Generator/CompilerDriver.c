@@ -130,6 +130,9 @@ int main(int argc, char* argv[]) {
       else {
         printSymbols(myListy.list[i].lex);
       }
+
+      if(myListy.list[i].isProc == 1)
+        printf("%d ", myListy.list[i].isProc);
     }
     printf("\n\n");
   }

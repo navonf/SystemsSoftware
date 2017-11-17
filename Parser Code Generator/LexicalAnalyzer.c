@@ -379,10 +379,13 @@ listy lexy() {
   int procFlag = 0;
   printf("LEXXXLISTTTTT \n");
 
-  while(lex[i] != periodsym) {
-    procFlag = 0;
+  for(i = 0; i < lexPosition; i++) {
     printf("%d ", lex[i]);
 		myList.list[idx].lex = lex[i];
+
+    if(procFlag == 1)
+      myList.list[idx].isProc = 1;
+
 		myList.size = s++;
 
     if(lex[i] == constsym) {
@@ -392,82 +395,33 @@ listy lexy() {
 			myList.list[idx].type = 1;
       j++;
     }
-
-    if(lex[i] == identsym) {
+    else if(lex[i] == identsym) {
       // Print each var name or number
       printf("%s ", id[j]);
 			strcpy(myList.list[idx].words, id[j]);
 			myList.list[idx].type = 2;
       j++;
     }
-
-    if(lex[i] == numbersym) {
-      /// for numbers
+    else if(lex[i] == numbersym) {
       printf("%s ", id[j]);
       strcpy(myList.list[idx].words, id[j]);
       myList.list[idx].type = 4;
       j++;
     }
-
-    // handle procedure
-    if(lex[i] == procsym) {
-      procFlag = 1;
+    else if(lex[i] == procsym) {
+      printf("%s ", id[j]);
+      strcpy(myList.list[idx].words, id[j]);
+      myList.list[idx].type = 3;
       myList.list[idx].isProc = 1;
-      while(lex[i] != endsym) {
-        if(lex[i] != procsym && lex[i] != constsym && lex[i] != identsym && lex[i] != numbersym) {
-          printf("%d ", lex[i]);
-      		myList.list[idx].lex = lex[i];
-          myList.list[idx].isProc = 1;
-        }
-
-        if(lex[i] == constsym) {
-          // Print each var name or number
-          printf("%d ", lex[i]);
-          myList.list[idx].lex = lex[i];
-          printf("%s ", id[j]);
-    			strcpy(myList.list[idx].words, id[j]);
-    			myList.list[idx].type = 1;
-          myList.list[idx].isProc = 1;
-          j++;
-        }
-
-        if(lex[i] == identsym) {
-          // Print each var name or number
-          printf("%d ", lex[i]);
-          myList.list[idx].lex = lex[i];
-          printf("%s ", id[j]);
-    			strcpy(myList.list[idx].words, id[j]);
-    			myList.list[idx].type = 2;
-          myList.list[idx].isProc = 1;
-          j++;
-        }
-
-        if(lex[i] == numbersym) {
-          /// for numbers
-          printf("%d ", lex[i]);
-          myList.list[idx].lex = lex[i];
-          printf("%s ", id[j]);
-          strcpy(myList.list[idx].words, id[j]);
-          myList.list[idx].type = 4;
-          myList.list[idx].isProc = 1;
-          j++;
-        }
-
-        myList.size = s++;
-        i++;
-        idx++;
-      }
+      procFlag = 1;
+      j++;
+    }
+    else if(lex[i] == endsym) {
+      myList.list[idx].isProc = 1;
+      procFlag = 0;
     }
 
-    if(procFlag == 0) {
-      idx++;
-      i++;
-    }
-  }
-  if(lex[i] == periodsym) {
-    myList.size = s++;
-    printf("%d ", lex[i]);
-    myList.list[idx].lex = lex[i];
+    idx++;
   }
   printf("\n");
 
