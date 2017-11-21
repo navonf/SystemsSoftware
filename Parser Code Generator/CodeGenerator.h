@@ -1,7 +1,6 @@
 #ifndef GEN
 #define GEN
 
-
 #include "Stack.h"
 
 typedef struct memory {
@@ -16,7 +15,5 @@ typedef struct {
 	mem memArr[1000];
 	int codeSize;
 } instruction;
-
-void emit(int opr, int l, int m, stack* stacky, instruction* code);
 
 #endif

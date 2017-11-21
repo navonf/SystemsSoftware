@@ -45,6 +45,9 @@ instruct code_vm[MAX_CODE_VM_LENGTH];
 // Halt flag
 int halt = 0;
 
+int calls = 0;
+int callArray[50];
+
 // Function definitions
 int startVM();
 int base(int l, int base);
@@ -81,14 +84,14 @@ int main(int argc, char* argv[]) {
 
   }
 
-  printf("in:\n");
+  printf("in:\n\n");
   if(runLexer == 1) {
 
     printf("Lexeme List:\n");
     int i = 0;
 
     for(i = 0; i < myListy.size; i++) {
-      // prints intssym and name
+      // prints varsym and name
       if(myListy.list[i].type == 2) {
         printf("%d ", myListy.list[i].lex);
         printf("%s ", myListy.list[i].words);
@@ -105,12 +108,11 @@ int main(int argc, char* argv[]) {
         printf("%d ", myListy.list[i].lex);
       }
 
-      if(myListy.list[i].isProc == 1)
-        printf("%d ", myListy.list[i].isProc);
-
       printf(" | ");
 
     }
+
+    printf("\n");
 
     printf("\nSymbols:\n");
 
@@ -121,7 +123,6 @@ int main(int argc, char* argv[]) {
       }
       else if(myListy.list[i].type == 4) {
         printSymbols(myListy.list[i].lex);
-        printf("%s ", myListy.list[i].words);
       }
       else if(myListy.list[i].type == 1) {
         printSymbols(myListy.list[i].lex);
@@ -131,8 +132,6 @@ int main(int argc, char* argv[]) {
         printSymbols(myListy.list[i].lex);
       }
 
-      if(myListy.list[i].isProc == 1)
-        printf("%d ", myListy.list[i].isProc);
     }
     printf("\n\n");
   }
@@ -140,15 +139,17 @@ int main(int argc, char* argv[]) {
 
   printf("\nout:\n");
   if(runParser == 1) {
-    parse(&code, &myListy);
-
     FILE* ofp = fopen("parse.txt", "w");
+
+    parse(&code, &myListy, ofp);
+
 
     int i;
     for (i = 0; i < code.codeSize; i++) {
       fprintf(ofp, "%d %d %d %d \n", code.memArr[i].op,code.memArr[i].r,code.memArr[i].l,code.memArr[i].m);
     }
 
+    printf("\nIntermediate Code: \n");
     for (i = 0; i < code.codeSize; i++) {
       printf("%d %d %d %d \n", code.memArr[i].op,code.memArr[i].r,code.memArr[i].l,code.memArr[i].m);
     }
@@ -322,16 +323,16 @@ void printSymbols(int num) {
      ir.r, ir.l, ir.m, pc, bp, sp);
 
      int i;
+     int j = 0;
+     int cnt;
      int flag = 0;
-     for(i = 1; i<=sp; i++) {
-       if(i == 7 && sp > 7) {
- 				printf("| ");
-         flag = 1;
+     for(cnt = 1; cnt <= sp;  cnt++) {
+       printf("%d", stack_vm[cnt]);
+
+       if(calls > 0 && callArray[j] == cnt) {
+         printf("|");
+         j++;
        }
-       if(i == 11 && sp > 11 && flag == 1) {
- 				printf("| ");
-       }
-       printf("%d ", stack_vm[i]);
      }
 
      if(ir.op == 9) {
@@ -369,6 +370,7 @@ void printSymbols(int num) {
        sp = bp - 1;
        bp = stack_vm[sp + 3];
        pc = stack_vm[sp + 4];
+       callArray[calls--] = 0;
        printf("RTN\t");
        break;
 
@@ -383,6 +385,7 @@ void printSymbols(int num) {
        break;
 
      case 5:
+       callArray[calls++] = sp;
        stack_vm[sp + 1] = 0;			        // space to return value
        stack_vm[sp + 2] = base(ir.l, bp); // static link (SL)
        stack_vm[sp + 3] = bp;			        // dynamic link (DL)

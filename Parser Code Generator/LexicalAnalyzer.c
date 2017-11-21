@@ -41,7 +41,7 @@ listy lexy() {
   // Scan in input file
   ifp = fopen("input.txt", "r");
 
-  printf("Source Program: \n");
+  // printf("Source Program: \n");
 
   // Input
   while(fscanf(ifp, "%c", &c) != EOF) {
@@ -161,7 +161,7 @@ listy lexy() {
         lex[lexPosition] = thensym;
         lexPosition++;
 
-        printf("%s\t\t%d\n", word, thensym);
+        // printf("%s\t\t%d\n", word, thensym);
       }
       else if(strcmp(word, "begin") == 0) {
         lex[lexPosition] = beginsym;
@@ -257,11 +257,10 @@ listy lexy() {
           lex[lexPosition] = becomessym;
           lexPosition++;
 
-          // printf("%s\t\t%d\n", sym, becomessym);
         } // handles single ':'
         else {
           fseek(ifp, -1, SEEK_CUR);
-          // printf("This is an invalid symbol ':'\n");
+          printf("This is an invalid symbol ':'\n");
           exit(1);
         }
       }
@@ -377,44 +376,39 @@ listy lexy() {
 	int idx = 0;
 	int s = 1;
   int procFlag = 0;
-  printf("LEXXXLISTTTTT \n");
+  // printf("LEXXXLISTTTTT \n");
 
   for(i = 0; i < lexPosition; i++) {
     printf("%d ", lex[i]);
 		myList.list[idx].lex = lex[i];
 
-    if(procFlag == 1)
-      myList.list[idx].isProc = 1;
+    // if(procFlag == 1)
+    //   myList.list[idx].isProc = 1;
 
 		myList.size = s++;
 
     if(lex[i] == constsym) {
       // Print each var name or number
-      printf("%s ", id[j]);
+      // printf("%s ", id[j]);
 			strcpy(myList.list[idx].words, id[j]);
 			myList.list[idx].type = 1;
       j++;
     }
     else if(lex[i] == identsym) {
       // Print each var name or number
-      printf("%s ", id[j]);
+      // printf("%s ", id[j]);
 			strcpy(myList.list[idx].words, id[j]);
 			myList.list[idx].type = 2;
       j++;
     }
     else if(lex[i] == numbersym) {
-      printf("%s ", id[j]);
+      // printf("%s ", id[j]);
       strcpy(myList.list[idx].words, id[j]);
       myList.list[idx].type = 4;
       j++;
     }
     else if(lex[i] == procsym) {
-      printf("%s ", id[j]);
-      strcpy(myList.list[idx].words, id[j]);
       myList.list[idx].type = 3;
-      myList.list[idx].isProc = 1;
-      procFlag = 1;
-      j++;
     }
     else if(lex[i] == endsym) {
       myList.list[idx].isProc = 1;
@@ -423,7 +417,7 @@ listy lexy() {
 
     idx++;
   }
-  printf("\n");
+  // printf("\n");
 
   // return tokens
 	return myList;

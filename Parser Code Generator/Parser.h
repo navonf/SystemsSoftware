@@ -17,7 +17,7 @@
 
 
 // code array
-instruction code[500];
+// instruction code[500];
 
 //Recommended data structure for the symbol.
 typedef struct {
@@ -28,17 +28,18 @@ typedef struct {
 	int addr; 		  // M address
 } symbol;
 
-void parse(instruction* code, listy* lst);
+void parse(instruction* code, listy* lst, FILE* ofp);
 void error (int recovery, int n);
-void block(stack* reg, instruction* code, symbol* table, listy* lst);
-void constDeclaration(stack* reg, instruction* code, symbol* table, listy* lst);
-void varDeclaration(stack* reg, instruction* code, symbol* table, listy* lst);
-void procDeclaration(stack* reg, instruction* code, symbol* table, listy* lst);
-void statement(stack* reg, instruction* code, symbol* table, listy* lst);
-void expression(stack* reg, instruction* code, symbol* table, listy* lst);
-void condition(stack* reg, instruction* code, symbol* table, listy* lst);
-void term(stack* reg, instruction* code, symbol* table, listy* lst);
-void factor(stack* reg, instruction* code, symbol* table, listy* lst);
+void block(stack* reg, instruction* code, symbol* table, listy* lst, FILE* ofp);
+void constDeclaration(stack* reg, instruction* code, symbol* table, listy* lst, FILE* ofp);
+void varDeclaration(stack* reg, instruction* code, symbol* table, listy* lst, FILE* ofp);
+void procDeclaration(stack* reg, instruction* code, symbol* table, listy* lst, FILE* ofp);
+void statement(stack* reg, instruction* code, symbol* table, listy* lst, FILE* ofp);
+void expression(stack* reg, instruction* code, symbol* table, listy* lst, FILE* ofp);
+void condition(stack* reg, instruction* code, symbol* table, listy* lst, FILE* ofp);
+void term(stack* reg, instruction* code, symbol* table, listy* lst, FILE* ofp);
+void factor(stack* reg, instruction* code, symbol* table, listy* lst, FILE* ofp);
+void gen(instruction* code, int op, int r, int l, int m, FILE* ofp);
 int position(char* id, symbol* table, int tx);
 
 #endif

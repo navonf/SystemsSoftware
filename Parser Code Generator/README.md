@@ -1,12 +1,18 @@
-# Parser - Code Generator
-Scans in a PL/0 program and parses it for Lexical Analysis, Generates Intermediate code, and the stack trace.
+# Parser - Code Generator HW 4
+Scans in a PL/0 program and parses it for Lexical Analysis, prints and generates Intermediate code, and prints the stack trace.
 
 - Have a file named "input.txt" in the same folder as all of the zip files.
 
 - Now, run the commands below
 
-$ gcc -o compiler LexicalAnalyzer.c Parser.c CompilerDriver.c Stack.c pMachine.c
+$ gcc -o compiler Stack.c Parser.c CompilerDriver.c LexicalAnalyzer.c
+
+- Now, run either of the commands below:
+
+$ ./compiler -l
+
+$ ./compiler -a
+
+$ ./compiler -v
 
 $ ./compiler -l -a -v
-
-- Unfortunately, I did not have sufficient time to complete and debug the parser and implement my pMachine. It finds the correct Lexeme List, Symbols, some errors, and a partial amount of generated code. Thank you.
